@@ -1,6 +1,5 @@
 import os
 import joblib
-import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 from sklearn.datasets import load_iris
@@ -36,7 +35,3 @@ def health():
 def predict(req: PredictRequest):
     pred = model.predict([req.features])[0]
     return PredictResponse(prediction=int(pred), model="logreg+scaler")
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
