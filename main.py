@@ -1,6 +1,7 @@
 import os
 import joblib
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
@@ -17,7 +18,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 pipe = Pipeline([("scaler", StandardScaler()), ("clf", LogisticRegression(max_iter=200))])
 pipe.fit(X_train, y_train)
 joblib.dump(pipe, "model.joblib")
-
 model = joblib.load("model.joblib")
 
 class PredictRequest(BaseModel):
@@ -26,6 +26,11 @@ class PredictRequest(BaseModel):
 class PredictResponse(BaseModel):
     prediction: int
     model: str
+
+# / ашылса /docs бетіне бағыттайды
+@app.get("/")
+def root():
+    return RedirectResponse(url="/docs")
 
 @app.get("/health")
 def health():
